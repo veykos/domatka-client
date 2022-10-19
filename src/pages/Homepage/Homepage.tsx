@@ -1,5 +1,3 @@
-import { Http2ServerRequest } from "http2";
-import { PropsWithChildren } from "react";
 
 interface HomepageProp {
     user?: string
