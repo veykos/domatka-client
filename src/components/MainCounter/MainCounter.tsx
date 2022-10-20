@@ -1,4 +1,4 @@
-import {MouseEvent, useState} from 'react'
+import {MouseEvent, useState, useEffect} from 'react'
 
 
 interface MainCounterProps {
@@ -8,29 +8,37 @@ interface MainCounterProps {
 
 export default function MainCounter(props:MainCounterProps) {
     const [isCounterRunning, setIsCounterRunning] = useState(false)
-
-    let startingDate = new Date(0,0,0,0,props.worktime.valueOf());
+    const [counterDate, setCounterDate] = useState(new Date(0,0,0,0,props.worktime))
+    // let startingDate = new Date(0,0,0,0,props.worktime.valueOf());
+    useEffect(() => {
+        setCounterDate(new Date(0,0,0,0,props.worktime))
+    }, [props.worktime])
+    
 
     function renderTime(date:Date):string {
-        const minutes = date.getMinutes() >= 10 ? String(date.getMinutes()) : "0" + String(date.getMinutes())
-        const seconds = date.getSeconds() >= 10 ? String(date.getSeconds()) : "0" + String(date.getSeconds());
+        const minutes = counterDate.getMinutes() >= 10 ? String(counterDate.getMinutes()) : "0" + String(counterDate.getMinutes())
+        const seconds = counterDate.getSeconds() >= 10 ? String(counterDate.getSeconds()) : "0" + String(counterDate.getSeconds());
         return `${minutes}:${seconds}`
     }
 
     function handleCountdown(event:MouseEvent) {
         setIsCounterRunning(!isCounterRunning)
-        if (isCounterRunning) {
-            const countdown = setInterval(() => {
-                startingDate.setSeconds(startingDate.getSeconds() - 1)
-                console.log(startingDate)
-            },1000)
-        }
+        // eslint-disable-next-lin
+        const counter:NodeJS.Timer | null = isCounterRunning 
+        ? setInterval(()=> {
+            let newDate = counterDate;
+            newDate.setSeconds(newDate.getSeconds() - 1)
+            setCounterDate(newDate)
+            console.log(counterDate)
+        },1000)
+        : null
     }
 
     return (
         <div className="main-counter">
-            <p aria-label="main-counter">{renderTime(startingDate)}</p>
+            <p aria-label="main-counter">{renderTime(counterDate)}</p>
             <button onClick={handleCountdown} >Start</button>
+            <button onClick={() => setCounterDate(new Date(1994,12,19,19,19))}>Test state</button>
         </div>
 
     )
