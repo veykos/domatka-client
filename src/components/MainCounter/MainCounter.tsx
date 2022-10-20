@@ -1,4 +1,4 @@
-import {MouseEvent, useEffect} from 'react'
+import {MouseEvent, useState} from 'react'
 
 
 interface MainCounterProps {
@@ -7,32 +7,30 @@ interface MainCounterProps {
 }
 
 export default function MainCounter(props:MainCounterProps) {
-    let startingDate = new Date(0,0,0,0,props.worktime);
+    const [isCounterRunning, setIsCounterRunning] = useState(false)
 
-    // useEffect(() => {
-    //   date.setMinutes(props.worktime)
-    //   date.setSeconds(60)
-    //   }
-    // , [props.worktime])
-    
-    
+    let startingDate = new Date(0,0,0,0,props.worktime.valueOf());
+
     function renderTime(date:Date):string {
         const minutes = date.getMinutes() >= 10 ? String(date.getMinutes()) : "0" + String(date.getMinutes())
         const seconds = date.getSeconds() >= 10 ? String(date.getSeconds()) : "0" + String(date.getSeconds());
         return `${minutes}:${seconds}`
-
     }
 
-
-    function startCountdown(event: MouseEvent) {
-        date = new Date();
-        date.setMinutes(props.worktime)
-
+    function handleCountdown(event:MouseEvent) {
+        setIsCounterRunning(!isCounterRunning)
+        if (isCounterRunning) {
+            const countdown = setInterval(() => {
+                startingDate.setSeconds(startingDate.getSeconds() - 1)
+                console.log(startingDate)
+            },1000)
+        }
     }
+
     return (
         <div className="main-counter">
             <p aria-label="main-counter">{renderTime(startingDate)}</p>
-            <button onClick={startCountdown}>Start</button>
+            <button onClick={handleCountdown} >Start</button>
         </div>
 
     )
