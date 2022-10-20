@@ -21,11 +21,11 @@ export default function TimeSelector(props:TimeSelectorProps) {
     }
 
     return (
-        <form >
+        <form aria-label="time-selection-form" >
             <label htmlFor="worktime">How long we will work? :</label>
-            <input name="worktime" id="worktime" type="number" min={10} max={60} onChange={handleWorktime} />
+            <input aria-label="worktime-input" name="worktime" id="worktime" type="number" min={10} max={60} onChange={handleWorktime} />
             <label htmlFor="breaktime">How long we will rest?</label>
-            <input name="breaktime" id="breaktime" type="number" onChange={handleBreaktime} />
+            <input aria-label="breaktime-input" name="breaktime" id="breaktime" type="number" onChange={handleBreaktime} />
         </form>
     )
 }
