@@ -6,39 +6,34 @@ interface MainCounterProps {
     breaktime: number
 }
 
+
 export default function MainCounter(props:MainCounterProps) {
-    const [isCounterRunning, setIsCounterRunning] = useState(false)
-    const [counterDate, setCounterDate] = useState(new Date(0,0,0,0,props.worktime))
-    // let startingDate = new Date(0,0,0,0,props.worktime.valueOf());
-    useEffect(() => {
-        setCounterDate(new Date(0,0,0,0,props.worktime))
-    }, [props.worktime])
     
+    const [timerSeconds, setTimerSeconds] = useState(props.worktime * 60)
+    const [isRunning, setIsRunning] = useState(false)
 
-    function renderTime(date:Date):string {
-        const minutes = counterDate.getMinutes() >= 10 ? String(counterDate.getMinutes()) : "0" + String(counterDate.getMinutes())
-        const seconds = counterDate.getSeconds() >= 10 ? String(counterDate.getSeconds()) : "0" + String(counterDate.getSeconds());
-        return `${minutes}:${seconds}`
+    useEffect(() => {
+        setTimerSeconds(props.worktime * 60)
+    }, [props.worktime])
+
+    function reduceByOneSecond() {
+        setTimerSeconds(prevTimerSeconds => prevTimerSeconds - 1)
+        console.log(timerSeconds)
+    }
+    let interval;
+    function handleClick() {
+        interval = setInterval(reduceByOneSecond, 1000)
     }
 
-    function handleCountdown(event:MouseEvent) {
-        setIsCounterRunning(!isCounterRunning)
-        // eslint-disable-next-lin
-        const counter:NodeJS.Timer | null = isCounterRunning 
-        ? setInterval(()=> {
-            let newDate = counterDate;
-            newDate.setSeconds(newDate.getSeconds() - 1)
-            setCounterDate(newDate)
-            console.log(counterDate)
-        },1000)
-        : null
-    }
+
+    const minutesStr:string = timerSeconds / 60 >= 10 ? String(Math.floor(timerSeconds / 60)) : '0' + String(timerSeconds / 60)
+    const secondsStr:string = timerSeconds % 60 >= 10 ? String(timerSeconds % 60) : '0' + String(timerSeconds % 60)
 
     return (
         <div className="main-counter">
-            <p aria-label="main-counter">{renderTime(counterDate)}</p>
-            <button onClick={handleCountdown} >Start</button>
-            <button onClick={() => setCounterDate(new Date(1994,12,19,19,19))}>Test state</button>
+            <span>{minutesStr}:{secondsStr}</span>
+
+            <button onClick={handleClick} >Minus one second</button>
         </div>
 
     )
